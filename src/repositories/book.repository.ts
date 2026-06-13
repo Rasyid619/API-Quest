@@ -1,6 +1,9 @@
 /** Data-access functions for the `books` table. */
 import type { Pool, PoolClient } from 'pg'
 import type Book from '../types/entities/book'
+import type BookAuthorFilter from '../types/services/book/book-author-filter'
+import type BookCountRecord from '../types/query-results/book-count.record'
+import type BookListFilter from '../types/services/book/book-list-filter'
 import type BookRecord from '../types/query-results/book.record'
 import getPgPool from '../helpers/pg-pool'
 
@@ -11,11 +14,9 @@ const INSERT_BOOK_SQL = `
   RETURNING id, title, author, year
 `
 
-/** SQL selecting all books, newest first. */
-const SELECT_BOOKS_SQL = `
-  SELECT id, title, author, year
-  FROM books
-  ORDER BY created_at DESC
+/** SQL fragment filtering books by a case-insensitive author substring. */
+const AUTHOR_FILTER_SQL = `
+  WHERE author ILIKE '%' || $1 || '%'
 `
 
 /** SQL selecting a single book by id. */
@@ -74,15 +75,64 @@ const insertBook = async (book: Book): Promise<Book> => {
 }
 
 /**
- * Fetches all books ordered by creation time, newest first.
+ * Fetches a page of books ordered by creation time, newest first, optionally
+ * filtered by a case-insensitive author substring.
  *
- * @returns All stored books.
+ * @param filter - Optional author substring plus page limit and offset.
+ * @returns Matching books on the requested page.
  */
-const findBooks = async (): Promise<Book[]> => {
-  /** Result of selecting all books. */
-  const result = await getPgPool().query<BookRecord>(SELECT_BOOKS_SQL)
+const findBooks = async (filter: BookListFilter): Promise<Book[]> => {
+  /** Whether an author substring filter is present. */
+  const hasAuthor = filter.author !== undefined
+
+  /** WHERE clause applied when an author filter is present. */
+  const whereClause = hasAuthor ? AUTHOR_FILTER_SQL : ''
+
+  /** Positional parameters for the select query. */
+  const params = hasAuthor ? [filter.author, filter.limit, filter.offset] : [filter.limit, filter.offset]
+
+  /** SQL selecting the requested page of books. */
+  const selectSql = `
+    SELECT id, title, author, year
+    FROM books
+    ${whereClause}
+    ORDER BY created_at DESC, id DESC
+    LIMIT $${hasAuthor ? 2 : 1} OFFSET $${hasAuthor ? 3 : 2}
+  `
+
+  /** Result of selecting the page of books. */
+  const result = await getPgPool().query<BookRecord>(selectSql, params)
 
   return result.rows.map(mapBookRecord)
+}
+
+/**
+ * Counts the books matching an optional case-insensitive author substring.
+ *
+ * @param filter - Optional author substring to filter by.
+ * @returns Number of matching books.
+ */
+const countBooks = async (filter: BookAuthorFilter): Promise<number> => {
+  /** Whether an author substring filter is present. */
+  const hasAuthor = filter.author !== undefined
+
+  /** WHERE clause applied when an author filter is present. */
+  const whereClause = hasAuthor ? AUTHOR_FILTER_SQL : ''
+
+  /** Positional parameters for the count query. */
+  const params = hasAuthor ? [filter.author] : []
+
+  /** SQL counting the matching books. */
+  const countSql = `
+    SELECT COUNT(*)::int AS total
+    FROM books
+    ${whereClause}
+  `
+
+  /** Result of counting the matching books. */
+  const result = await getPgPool().query<BookCountRecord>(countSql, params)
+
+  return result.rows[0].total
 }
 
 /**
@@ -146,4 +196,4 @@ const deleteBook = async (id: string, executor: Pool | PoolClient = getPgPool())
   return (result.rowCount ?? 0) > 0
 }
 
-export { deleteBook, findBookById, findBooks, insertBook, updateBook }
+export { countBooks, deleteBook, findBookById, findBooks, insertBook, updateBook }

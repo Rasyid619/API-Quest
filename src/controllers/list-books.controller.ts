@@ -1,19 +1,23 @@
 /** List-books controller module. */
 import * as bookService from '../services/book.service'
 import type Controller from '../types/controller'
+import type ListBooksQueryDto from '../types/dtos/list-books-query.dto'
 import { StatusCodes } from 'http-status-codes'
 
 /**
- * Responds 200 with all stored books.
+ * Responds 200 with a paginated page of books, optionally filtered by author.
  *
- * @param _request - Express request object (unused).
+ * @param request - Express request object carrying the validated query.
  * @param response - Express response object.
  */
-const listBooks: Controller = async (_request, response) => {
-  /** All stored books. */
-  const books = await bookService.listBooks()
+const listBooks: Controller = async (request, response) => {
+  /** Validated author filter and pagination parameters. */
+  const query = request.parsedQuery as ListBooksQueryDto
 
-  response.status(StatusCodes.OK).json(books)
+  /** Paginated envelope of matching books. */
+  const result = await bookService.listBooks(query)
+
+  response.status(StatusCodes.OK).json(result)
 }
 
 export default listBooks

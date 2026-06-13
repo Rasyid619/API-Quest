@@ -40,7 +40,7 @@ describe('/auth', () => {
         .set('Authorization', `Bearer ${tokenResponse.body.token}`)
 
       expect(listResponse.status).toBe(200)
-      expect(listResponse.body).toEqual([createResponse.body])
+      expect(listResponse.body).toEqual({ data: [createResponse.body], page: 1, limit: 10, total: 1 })
     })
   })
 

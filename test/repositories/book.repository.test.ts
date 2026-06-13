@@ -37,9 +37,37 @@ describe('book.repository', () => {
       const book = { id: randomUUID(), title: 'It', author: 'King', year: 1986 }
       await bookRepository.insertBook(book)
 
-      const books = await bookRepository.findBooks()
+      const books = await bookRepository.findBooks({ limit: 100, offset: 0 })
 
       expect(books).toEqual([book])
+    })
+  })
+
+  describe('findBooks with an author filter', () => {
+    it('returns only books whose author matches case-insensitively', async () => {
+      const match = { id: randomUUID(), title: 'It', author: 'Stephen King', year: 1986 }
+      const other = { id: randomUUID(), title: 'Dune', author: 'Frank Herbert', year: 1965 }
+      await bookRepository.insertBook(match)
+      await bookRepository.insertBook(other)
+
+      const books = await bookRepository.findBooks({ author: 'king', limit: 100, offset: 0 })
+
+      expect(books).toEqual([match])
+    })
+  })
+
+  describe('countBooks', () => {
+    it('counts all books and the filtered subset', async () => {
+      const match = { id: randomUUID(), title: 'It', author: 'Stephen King', year: 1986 }
+      const other = { id: randomUUID(), title: 'Dune', author: 'Frank Herbert', year: 1965 }
+      await bookRepository.insertBook(match)
+      await bookRepository.insertBook(other)
+
+      const total = await bookRepository.countBooks({})
+      const filtered = await bookRepository.countBooks({ author: 'king' })
+
+      expect(total).toBe(2)
+      expect(filtered).toBe(1)
     })
   })
 
