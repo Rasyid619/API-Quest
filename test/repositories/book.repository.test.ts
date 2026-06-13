@@ -56,18 +56,16 @@ describe('book.repository', () => {
     })
   })
 
-  describe('countBooks', () => {
-    it('counts all books and the filtered subset', async () => {
-      const match = { id: randomUUID(), title: 'It', author: 'Stephen King', year: 1986 }
-      const other = { id: randomUUID(), title: 'Dune', author: 'Frank Herbert', year: 1965 }
-      await bookRepository.insertBook(match)
-      await bookRepository.insertBook(other)
+  describe('paginate books with limit and offset', () => {
+    it('returns only the requested page', async () => {
+      const first = { id: randomUUID(), title: 'First', author: 'Author', year: 2001 }
+      const second = { id: randomUUID(), title: 'Second', author: 'Author', year: 2002 }
+      await bookRepository.insertBook(first)
+      await bookRepository.insertBook(second)
 
-      const total = await bookRepository.countBooks({})
-      const filtered = await bookRepository.countBooks({ author: 'king' })
+      const books = await bookRepository.findBooks({ limit: 1, offset: 1 })
 
-      expect(total).toBe(2)
-      expect(filtered).toBe(1)
+      expect(books).toHaveLength(1)
     })
   })
 

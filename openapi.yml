@@ -74,7 +74,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PaginatedBooksResponse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
         "400":
           description: A query parameter failed validation.
         "401":
@@ -272,28 +274,6 @@ components:
       required:
         - username
         - password
-    PaginatedBooksResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          description: Books on the current page.
-          items:
-            $ref: "#/components/schemas/Book"
-        page:
-          type: integer
-          description: One-based page number.
-        limit:
-          type: integer
-          description: Maximum number of books returned per page.
-        total:
-          type: integer
-          description: Total number of books matching the filter.
-      required:
-        - data
-        - page
-        - limit
-        - total
     TokenResponse:
       type: object
       properties:

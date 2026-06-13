@@ -44,7 +44,7 @@ describe('/books', () => {
         .set('Authorization', `Bearer ${tokenResponse.body.token}`)
 
       expect(listResponse.status).toBe(200)
-      expect(listResponse.body).toEqual({ data: [createResponse.body], page: 1, limit: 10, total: 1 })
+      expect(listResponse.body).toEqual([createResponse.body])
 
       const getResponse = await request(app).get(`/books/${createResponse.body.id}`)
 
@@ -74,7 +74,7 @@ describe('/books', () => {
         .set('Authorization', `Bearer ${tokenResponse.body.token}`)
 
       expect(listResponse.status).toBe(200)
-      expect(listResponse.body).toEqual({ data: [matchResponse.body], page: 1, limit: 10, total: 1 })
+      expect(listResponse.body).toEqual([matchResponse.body])
     })
   })
 
@@ -103,10 +103,7 @@ describe('/books', () => {
         .set('Authorization', `Bearer ${tokenResponse.body.token}`)
 
       expect(listResponse.status).toBe(200)
-      expect(listResponse.body.data).toHaveLength(1)
-      expect(listResponse.body.page).toBe(2)
-      expect(listResponse.body.limit).toBe(2)
-      expect(listResponse.body.total).toBe(3)
+      expect(listResponse.body).toHaveLength(1)
     })
   })
 

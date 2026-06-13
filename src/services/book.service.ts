@@ -4,7 +4,6 @@ import type Book from '../types/entities/book'
 import type CreateBookDto from '../types/dtos/create-book.dto'
 import type ListBooksQueryDto from '../types/dtos/list-books-query.dto'
 import NotFoundError from '../errors/not-found-error'
-import type PaginatedBooksResponseDto from '../types/dtos/paginated-books-response.dto'
 import { randomUUID } from 'node:crypto'
 import runInTransaction from '../helpers/run-in-transaction'
 
@@ -30,24 +29,13 @@ const createBook = async (payload: CreateBookDto): Promise<Book> => {
  * Lists a page of books, optionally filtered by author.
  *
  * @param query - Validated author filter and pagination parameters.
- * @returns Paginated envelope of matching books.
+ * @returns Matching books on the requested page.
  */
-const listBooks = async (query: ListBooksQueryDto): Promise<PaginatedBooksResponseDto> => {
+const listBooks = async (query: ListBooksQueryDto): Promise<Book[]> => {
   /** Number of rows to skip for the requested page. */
   const offset = (query.page - 1) * query.limit
 
-  /** Books on the requested page. */
-  const data = await bookRepository.findBooks({ author: query.author, limit: query.limit, offset })
-
-  /** Total number of books matching the filter. */
-  const total = await bookRepository.countBooks({ author: query.author })
-
-  return {
-    data,
-    page: query.page,
-    limit: query.limit,
-    total,
-  }
+  return bookRepository.findBooks({ author: query.author, limit: query.limit, offset })
 }
 
 /**

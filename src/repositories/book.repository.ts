@@ -1,8 +1,6 @@
 /** Data-access functions for the `books` table. */
 import type { Pool, PoolClient } from 'pg'
 import type Book from '../types/entities/book'
-import type BookAuthorFilter from '../types/services/book/book-author-filter'
-import type BookCountRecord from '../types/query-results/book-count.record'
 import type BookListFilter from '../types/services/book/book-list-filter'
 import type BookRecord from '../types/query-results/book.record'
 import getPgPool from '../helpers/pg-pool'
@@ -107,35 +105,6 @@ const findBooks = async (filter: BookListFilter): Promise<Book[]> => {
 }
 
 /**
- * Counts the books matching an optional case-insensitive author substring.
- *
- * @param filter - Optional author substring to filter by.
- * @returns Number of matching books.
- */
-const countBooks = async (filter: BookAuthorFilter): Promise<number> => {
-  /** Whether an author substring filter is present. */
-  const hasAuthor = filter.author !== undefined
-
-  /** WHERE clause applied when an author filter is present. */
-  const whereClause = hasAuthor ? AUTHOR_FILTER_SQL : ''
-
-  /** Positional parameters for the count query. */
-  const params = hasAuthor ? [filter.author] : []
-
-  /** SQL counting the matching books. */
-  const countSql = `
-    SELECT COUNT(*)::int AS total
-    FROM books
-    ${whereClause}
-  `
-
-  /** Result of counting the matching books. */
-  const result = await getPgPool().query<BookCountRecord>(countSql, params)
-
-  return result.rows[0].total
-}
-
-/**
  * Fetches a single book by id.
  *
  * @param id - Identifier of the book.
@@ -196,4 +165,4 @@ const deleteBook = async (id: string, executor: Pool | PoolClient = getPgPool())
   return (result.rowCount ?? 0) > 0
 }
 
-export { countBooks, deleteBook, findBookById, findBooks, insertBook, updateBook }
+export { deleteBook, findBookById, findBooks, insertBook, updateBook }

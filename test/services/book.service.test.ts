@@ -17,10 +17,10 @@ describe('book.service', () => {
     it('persists a book with a generated id and lists it', async () => {
       const created = await bookService.createBook({ title: 'Sapiens', author: 'Harari', year: 2011 })
 
-      const result = await bookService.listBooks({ page: 1, limit: 10 })
+      const books = await bookService.listBooks({ page: 1, limit: 10 })
 
       expect(created.id).toEqual(expect.any(String))
-      expect(result).toEqual({ data: [created], page: 1, limit: 10, total: 1 })
+      expect(books).toEqual([created])
     })
   })
 
@@ -29,9 +29,9 @@ describe('book.service', () => {
       const match = await bookService.createBook({ title: 'Sapiens', author: 'Harari', year: 2011 })
       await bookService.createBook({ title: 'Dune', author: 'Herbert', year: 1965 })
 
-      const result = await bookService.listBooks({ author: 'harari', page: 1, limit: 10 })
+      const books = await bookService.listBooks({ author: 'harari', page: 1, limit: 10 })
 
-      expect(result).toEqual({ data: [match], page: 1, limit: 10, total: 1 })
+      expect(books).toEqual([match])
     })
   })
 
@@ -41,10 +41,9 @@ describe('book.service', () => {
       await bookService.createBook({ title: 'Second', author: 'Author', year: 2002 })
       await bookService.createBook({ title: 'Third', author: 'Author', year: 2003 })
 
-      const result = await bookService.listBooks({ page: 2, limit: 2 })
+      const books = await bookService.listBooks({ page: 2, limit: 2 })
 
-      expect(result.data).toHaveLength(1)
-      expect(result.total).toBe(3)
+      expect(books).toHaveLength(1)
     })
   })
 
