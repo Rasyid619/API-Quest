@@ -1,16 +1,10 @@
-/** Database-backed tests for the transaction helper. */
+import databaseTest from './database-test'
 import getPgPool from '../../src/helpers/pg-pool'
 import { randomUUID } from 'node:crypto'
 import runInTransaction from '../../src/helpers/run-in-transaction'
 
 describe('runInTransaction', () => {
-  beforeEach(async () => {
-    await getPgPool().query('TRUNCATE books')
-  })
-
-  afterAll(async () => {
-    await getPgPool().end()
-  })
+  databaseTest()
 
   describe('when the work succeeds', () => {
     it('commits the changes and returns the result', async () => {

@@ -1,17 +1,10 @@
-/** Database-backed tests for finding books. */
+import databaseTest from '../../helpers/database-test'
 import findBooks from '../../../src/repositories/book/find'
-import getPgPool from '../../../src/helpers/pg-pool'
 import insertBook from '../../../src/repositories/book/insert'
 import { randomUUID } from 'node:crypto'
 
 describe('findBooks', () => {
-  beforeEach(async () => {
-    await getPgPool().query('TRUNCATE books')
-  })
-
-  afterAll(async () => {
-    await getPgPool().end()
-  })
+  databaseTest()
 
   describe('when books exist', () => {
     it('returns every stored book', async () => {

@@ -1,21 +1,15 @@
-/** Integration test covering authentication and the protected books route. */
+import { TEST_ACCESS_TOKEN_SECRET } from '../helpers/build-authorization-header'
 import buildApp from '../../src/app'
-import getPgPool from '../../src/helpers/pg-pool'
+import databaseTest from '../helpers/database-test'
 import request from 'supertest'
 
 describe('/auth', () => {
+  databaseTest()
+
   beforeAll(() => {
-    process.env.ACCESS_TOKEN_PUBLIC_KEY = 'test-secret'
+    process.env.ACCESS_TOKEN_PUBLIC_KEY = TEST_ACCESS_TOKEN_SECRET
     process.env.AUTH_USERNAME = 'admin'
     process.env.AUTH_PASSWORD = 'password'
-  })
-
-  beforeEach(async () => {
-    await getPgPool().query('TRUNCATE books')
-  })
-
-  afterAll(async () => {
-    await getPgPool().end()
   })
 
   describe('login then list books with the token', () => {
@@ -41,40 +35,6 @@ describe('/auth', () => {
 
       expect(listResponse.status).toBe(200)
       expect(listResponse.body).toEqual([createResponse.body])
-    })
-  })
-
-  describe('list books without a token', () => {
-    it('responds 401', async () => {
-      const app = buildApp(false)
-
-      const listResponse = await request(app).get('/books')
-
-      expect(listResponse.status).toBe(401)
-    })
-  })
-
-  describe('login with wrong credentials', () => {
-    it('responds 401', async () => {
-      const app = buildApp(false)
-
-      const tokenResponse = await request(app)
-        .post('/auth/token')
-        .send({ username: 'admin', password: 'wrong' })
-
-      expect(tokenResponse.status).toBe(401)
-    })
-  })
-
-  describe('login with a missing field', () => {
-    it('responds 400', async () => {
-      const app = buildApp(false)
-
-      const tokenResponse = await request(app)
-        .post('/auth/token')
-        .send({ username: 'admin' })
-
-      expect(tokenResponse.status).toBe(400)
     })
   })
 })

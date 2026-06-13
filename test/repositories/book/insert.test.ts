@@ -1,16 +1,9 @@
-/** Database-backed tests for inserting books. */
-import getPgPool from '../../../src/helpers/pg-pool'
+import databaseTest from '../../helpers/database-test'
 import insertBook from '../../../src/repositories/book/insert'
 import { randomUUID } from 'node:crypto'
 
 describe('insertBook', () => {
-  beforeEach(async () => {
-    await getPgPool().query('TRUNCATE books')
-  })
-
-  afterAll(async () => {
-    await getPgPool().end()
-  })
+  databaseTest()
 
   describe('when a book is inserted', () => {
     it('stores the book and returns it', async () => {

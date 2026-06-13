@@ -2,11 +2,11 @@
 import * as bookRepository from '../../../src/repositories/book'
 import * as transactionHelper from '../../../src/helpers/run-in-transaction'
 import NotFoundError from '../../../src/errors/not-found-error'
-import type { PoolClient } from 'pg'
+import type { PgClient } from '../../../src/types/pg'
 import updateBook from '../../../src/services/book/update.service'
 
 /** Transaction client passed to repository functions. */
-const transactionClient = {} as PoolClient
+const transactionClient = {} as PgClient
 
 describe('updateBook', () => {
   afterEach(() => {

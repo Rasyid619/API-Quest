@@ -1,5 +1,6 @@
 import type Book from '../../types/entities/book'
 import type BookRecord from '../../types/query-results/book/book.record'
+import type { PgQueryRunner } from '../../types/pg'
 import getPgPool from '../../helpers/pg-pool'
 import mapBookRecord from './map-record'
 
@@ -14,11 +15,12 @@ const INSERT_BOOK_SQL = `
  * Inserts a book and returns the stored entity.
  *
  * @param book - Book to insert.
+ * @param executor - Pool or transaction client running the query.
  * @returns Stored book.
  */
-const insertBook = async (book: Book): Promise<Book> => {
+const insertBook = async (book: Book, executor: PgQueryRunner = getPgPool()): Promise<Book> => {
   /** Result of inserting the book. */
-  const result = await getPgPool().query<BookRecord>(
+  const result = await executor.query<BookRecord>(
     INSERT_BOOK_SQL,
     [
       book.id,

@@ -1,6 +1,7 @@
 import type Book from '../../types/entities/book'
 import type BookListFilter from '../../types/services/book/book-list-filter'
 import type BookRecord from '../../types/query-results/book/book.record'
+import type { PgQueryRunner } from '../../types/pg'
 import getPgPool from '../../helpers/pg-pool'
 import mapBookRecord from './map-record'
 
@@ -14,9 +15,10 @@ const AUTHOR_FILTER_SQL = `
  * filtered by a case-insensitive author substring.
  *
  * @param filter - Optional author substring plus page limit and offset.
+ * @param executor - Pool or transaction client running the query.
  * @returns Matching books on the requested page.
  */
-const findBooks = async (filter: BookListFilter): Promise<Book[]> => {
+const findBooks = async (filter: BookListFilter, executor: PgQueryRunner = getPgPool()): Promise<Book[]> => {
   /** Whether an author substring filter is present. */
   const hasAuthor = filter.author !== undefined
 
@@ -36,7 +38,7 @@ const findBooks = async (filter: BookListFilter): Promise<Book[]> => {
   `
 
   /** Result of selecting the page of books. */
-  const result = await getPgPool().query<BookRecord>(selectSql, params)
+  const result = await executor.query<BookRecord>(selectSql, params)
 
   return result.rows.map(mapBookRecord)
 }

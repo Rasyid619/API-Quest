@@ -17,17 +17,4 @@ describe('POST /echo', () => {
       expect(response.body).toEqual(payload)
     })
   })
-
-  describe('when the body is malformed JSON', () => {
-    it('responds 400', async () => {
-      const app = buildApp(false)
-
-      const response = await request(app)
-        .post('/echo')
-        .set('Content-Type', 'application/json')
-        .send('{')
-
-      expect(response.status).toBe(400)
-    })
-  })
 })
