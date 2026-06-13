@@ -1,4 +1,5 @@
 /** Data-access functions for the `books` table. */
+import type { Pool, PoolClient } from 'pg'
 import type Book from '../types/entities/book'
 import type BookRecord from '../types/query-results/book.record'
 import getPgPool from '../helpers/pg-pool'
@@ -21,6 +22,20 @@ const SELECT_BOOKS_SQL = `
 const SELECT_BOOK_BY_ID_SQL = `
   SELECT id, title, author, year
   FROM books
+  WHERE id = $1
+`
+
+/** SQL updating a book by id and returning its stored columns. */
+const UPDATE_BOOK_SQL = `
+  UPDATE books
+  SET title = $2, author = $3, year = $4
+  WHERE id = $1
+  RETURNING id, title, author, year
+`
+
+/** SQL deleting a book by id. */
+const DELETE_BOOK_SQL = `
+  DELETE FROM books
   WHERE id = $1
 `
 
@@ -89,4 +104,46 @@ const findBookById = async (id: string): Promise<Book | undefined> => {
   return mapBookRecord(record)
 }
 
-export { findBookById, findBooks, insertBook }
+/**
+ * Updates a book by id and returns the stored entity.
+ *
+ * @param book - Book carrying the id and new values.
+ * @param executor - Pool or transaction client running the query.
+ * @returns Updated book, or undefined when none matches the id.
+ */
+const updateBook = async (book: Book, executor: Pool | PoolClient = getPgPool()): Promise<Book | undefined> => {
+  /** Result of updating the book. */
+  const result = await executor.query<BookRecord>(
+    UPDATE_BOOK_SQL,
+    [
+      book.id,
+      book.title,
+      book.author,
+      book.year,
+    ],
+  )
+
+  /** Updated book row, if present. */
+  const record = result.rows[0]
+  if (!record) {
+    return undefined
+  }
+
+  return mapBookRecord(record)
+}
+
+/**
+ * Deletes a book by id.
+ *
+ * @param id - Identifier of the book.
+ * @param executor - Pool or transaction client running the query.
+ * @returns Whether a row was deleted.
+ */
+const deleteBook = async (id: string, executor: Pool | PoolClient = getPgPool()): Promise<boolean> => {
+  /** Result of deleting the book. */
+  const result = await executor.query(DELETE_BOOK_SQL, [id])
+
+  return (result.rowCount ?? 0) > 0
+}
+
+export { deleteBook, findBookById, findBooks, insertBook, updateBook }
