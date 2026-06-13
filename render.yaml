@@ -4,6 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: corepack yarn install --immutable && corepack yarn build
+    preDeployCommand: corepack yarn migrate up
     startCommand: node --enable-source-maps ./dist/index.js
     healthCheckPath: /health
     envVars:
@@ -11,3 +12,6 @@ services:
         value: 24.14.1
       - key: PORT
         value: 10000
+      # Set to your Render Postgres Internal Database URL in the dashboard.
+      - key: DATABASE_URL
+        sync: false

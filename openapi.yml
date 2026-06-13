@@ -5,12 +5,71 @@ info:
   description: API Quest assessment service.
 
 tags:
+  - name: Books
+    description: Create and read books.
   - name: Echo
     description: Echoes request payloads back to the client.
   - name: Health
     description: Service health checks.
 
 paths:
+  /books:
+    get:
+      tags:
+        - Books
+      summary: List all books.
+      responses:
+        "200":
+          description: All stored books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+    post:
+      tags:
+        - Books
+      summary: Create a book.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookRequest"
+      responses:
+        "201":
+          description: The created book.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: The request body failed validation.
+  /books/{id}:
+    get:
+      tags:
+        - Books
+      summary: Get a single book by id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID identifying the book.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: The requested book.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: The id is not a valid UUID.
+        "404":
+          description: No book has the given id.
   /echo:
     post:
       tags:
@@ -63,6 +122,44 @@ paths:
                     type: boolean
 
 components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the book.
+        title:
+          type: string
+          description: Title of the book.
+        author:
+          type: string
+          description: Author of the book.
+        year:
+          type: integer
+          description: Publication year of the book.
+      required:
+        - id
+        - title
+        - author
+        - year
+    CreateBookRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the book.
+        author:
+          type: string
+          description: Author of the book.
+        year:
+          type: integer
+          description: Publication year of the book.
+      required:
+        - title
+        - author
+        - year
   securitySchemes:
     BearerAuth:
       type: http
