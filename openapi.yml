@@ -5,6 +5,8 @@ info:
   description: API Quest assessment service.
 
 tags:
+  - name: Auth
+    description: Authentication and token issuance.
   - name: Books
     description: Create, read, update, and delete books.
   - name: Echo
@@ -13,11 +15,35 @@ tags:
     description: Service health checks.
 
 paths:
+  /auth/token:
+    post:
+      tags:
+        - Auth
+      summary: Issue an access token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: The issued access token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: The request body failed validation.
+        "401":
+          description: The credentials are invalid.
   /books:
     get:
       tags:
         - Books
       summary: List all books.
+      security:
+        - BearerAuth: []
       responses:
         "200":
           description: All stored books.
@@ -27,6 +53,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Book"
+        "401":
+          description: The access token is missing or invalid.
     post:
       tags:
         - Books
@@ -208,6 +236,26 @@ components:
         - title
         - author
         - year
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username submitted by the client.
+        password:
+          type: string
+          description: Password submitted by the client.
+      required:
+        - username
+        - password
+    TokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Signed JWT bearer token.
+      required:
+        - token
   securitySchemes:
     BearerAuth:
       type: http
