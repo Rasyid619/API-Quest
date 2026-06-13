@@ -3,8 +3,7 @@ services:
     name: api-quest
     runtime: node
     plan: free
-    buildCommand: corepack yarn install --immutable && corepack yarn build
-    preDeployCommand: corepack yarn migrate up
+    buildCommand: corepack yarn install --immutable && corepack yarn build && corepack yarn migrate up
     startCommand: node --enable-source-maps ./dist/index.js
     healthCheckPath: /health
     envVars:
