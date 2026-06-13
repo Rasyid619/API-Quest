@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: API Quest API
+  version: 0.1.0
+  description: API Quest assessment service.
+
+tags:
+  - name: Health
+    description: Service health checks.
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Check service health.
+      responses:
+        "200":
+          description: Service is healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
