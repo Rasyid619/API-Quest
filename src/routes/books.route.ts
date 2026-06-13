@@ -8,12 +8,13 @@ import getBook from '../controllers/get-book.controller'
 import listBooks from '../controllers/list-books.controller'
 import requestValidator from '../middlewares/request-validator'
 import updateBook from '../controllers/update-book.controller'
+import verifyToken from '../middlewares/verify-token'
 
 /** Express router for the books resource. */
 const booksRouter = Router()
 
 booksRouter.post('/', requestValidator({ body: CREATE_BOOK_SCHEMA }), createBook)
-booksRouter.get('/', listBooks)
+booksRouter.get('/', verifyToken(), listBooks)
 booksRouter.get('/:id', requestValidator({ path: BOOK_ID_PARAMS_SCHEMA }), getBook)
 booksRouter.put('/:id', requestValidator({ path: BOOK_ID_PARAMS_SCHEMA, body: CREATE_BOOK_SCHEMA }), updateBook)
 booksRouter.delete('/:id', requestValidator({ path: BOOK_ID_PARAMS_SCHEMA }), deleteBook)

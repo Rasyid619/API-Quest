@@ -5,6 +5,12 @@ import { randomUUID } from 'node:crypto'
 import request from 'supertest'
 
 describe('/books', () => {
+  beforeAll(() => {
+    process.env.ACCESS_TOKEN_PUBLIC_KEY = 'test-secret'
+    process.env.AUTH_USERNAME = 'admin'
+    process.env.AUTH_PASSWORD = 'password'
+  })
+
   beforeEach(async () => {
     await getPgPool().query('TRUNCATE books')
   })
@@ -29,7 +35,13 @@ describe('/books', () => {
         year: 2008,
       })
 
-      const listResponse = await request(app).get('/books')
+      const tokenResponse = await request(app)
+        .post('/auth/token')
+        .send({ username: 'admin', password: 'password' })
+
+      const listResponse = await request(app)
+        .get('/books')
+        .set('Authorization', `Bearer ${tokenResponse.body.token}`)
 
       expect(listResponse.status).toBe(200)
       expect(listResponse.body).toEqual([createResponse.body])
