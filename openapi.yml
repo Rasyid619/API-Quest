@@ -24,6 +24,21 @@ paths:
                 properties:
                   ok:
                     type: boolean
+  /ping:
+    get:
+      tags:
+        - Health
+      summary: Check whether the service is alive.
+      responses:
+        "200":
+          description: Service is alive.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
 
 components:
   securitySchemes:
