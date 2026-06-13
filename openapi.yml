@@ -5,10 +5,32 @@ info:
   description: API Quest assessment service.
 
 tags:
+  - name: Echo
+    description: Echoes request payloads back to the client.
   - name: Health
     description: Service health checks.
 
 paths:
+  /echo:
+    post:
+      tags:
+        - Echo
+      summary: Echo the JSON object from the request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: The same JSON object that was received.
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: The request body is missing or not valid JSON.
   /health:
     get:
       tags:
