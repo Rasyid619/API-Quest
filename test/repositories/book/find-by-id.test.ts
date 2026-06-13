@@ -1,17 +1,10 @@
-/** Database-backed tests for finding books by id. */
+import databaseTest from '../../helpers/database-test'
 import findBookById from '../../../src/repositories/book/find-by-id'
-import getPgPool from '../../../src/helpers/pg-pool'
 import insertBook from '../../../src/repositories/book/insert'
 import { randomUUID } from 'node:crypto'
 
 describe('findBookById', () => {
-  beforeEach(async () => {
-    await getPgPool().query('TRUNCATE books')
-  })
-
-  afterAll(async () => {
-    await getPgPool().end()
-  })
+  databaseTest()
 
   describe('when a book matches', () => {
     it('returns the book', async () => {

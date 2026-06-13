@@ -1,6 +1,6 @@
-import type { Pool, PoolClient } from 'pg'
 import type Book from '../../types/entities/book'
 import type BookRecord from '../../types/query-results/book/book.record'
+import type { PgQueryRunner } from '../../types/pg'
 import getPgPool from '../../helpers/pg-pool'
 import mapBookRecord from './map-record'
 
@@ -19,7 +19,7 @@ const UPDATE_BOOK_SQL = `
  * @param executor - Pool or transaction client running the query.
  * @returns Updated book, or undefined when none matches the id.
  */
-const updateBook = async (book: Book, executor: Pool | PoolClient = getPgPool()): Promise<Book | undefined> => {
+const updateBook = async (book: Book, executor: PgQueryRunner = getPgPool()): Promise<Book | undefined> => {
   /** Result of updating the book. */
   const result = await executor.query<BookRecord>(
     UPDATE_BOOK_SQL,

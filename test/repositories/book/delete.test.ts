@@ -1,18 +1,11 @@
-/** Database-backed tests for deleting books. */
+import databaseTest from '../../helpers/database-test'
 import deleteBook from '../../../src/repositories/book/delete'
 import findBookById from '../../../src/repositories/book/find-by-id'
-import getPgPool from '../../../src/helpers/pg-pool'
 import insertBook from '../../../src/repositories/book/insert'
 import { randomUUID } from 'node:crypto'
 
 describe('deleteBook', () => {
-  beforeEach(async () => {
-    await getPgPool().query('TRUNCATE books')
-  })
-
-  afterAll(async () => {
-    await getPgPool().end()
-  })
+  databaseTest()
 
   describe('when a book matches', () => {
     it('removes the book and returns true', async () => {

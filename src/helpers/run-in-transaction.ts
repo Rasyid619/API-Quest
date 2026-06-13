@@ -1,5 +1,5 @@
 /** Transaction helper that runs work inside a single Postgres transaction. */
-import type { PoolClient } from 'pg'
+import type { PgClient } from '../types/pg'
 import getPgPool from './pg-pool'
 
 /**
@@ -9,7 +9,7 @@ import getPgPool from './pg-pool'
  * @param work - Callback receiving the transaction-bound client.
  * @returns Value produced by the callback.
  */
-const runInTransaction = async <T>(work: (client: PoolClient) => Promise<T>): Promise<T> => {
+const runInTransaction = async <T>(work: (client: PgClient) => Promise<T>): Promise<T> => {
   /** Dedicated client bound to the transaction. */
   const client = await getPgPool().connect()
 

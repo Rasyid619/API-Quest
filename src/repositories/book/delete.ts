@@ -1,4 +1,4 @@
-import type { Pool, PoolClient } from 'pg'
+import type { PgQueryRunner } from '../../types/pg'
 import getPgPool from '../../helpers/pg-pool'
 
 /** SQL deleting a book by id. */
@@ -14,7 +14,7 @@ const DELETE_BOOK_SQL = `
  * @param executor - Pool or transaction client running the query.
  * @returns Whether a row was deleted.
  */
-const deleteBook = async (id: string, executor: Pool | PoolClient = getPgPool()): Promise<boolean> => {
+const deleteBook = async (id: string, executor: PgQueryRunner = getPgPool()): Promise<boolean> => {
   /** Result of deleting the book. */
   const result = await executor.query(DELETE_BOOK_SQL, [id])
 
