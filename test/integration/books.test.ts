@@ -44,12 +44,85 @@ describe('/books', () => {
         .set('Authorization', `Bearer ${tokenResponse.body.token}`)
 
       expect(listResponse.status).toBe(200)
-      expect(listResponse.body).toEqual([createResponse.body])
+      expect(listResponse.body).toEqual({ data: [createResponse.body], page: 1, limit: 10, total: 1 })
 
       const getResponse = await request(app).get(`/books/${createResponse.body.id}`)
 
       expect(getResponse.status).toBe(200)
       expect(getResponse.body).toEqual(createResponse.body)
+    })
+  })
+
+  describe('filter books by author', () => {
+    it('returns only the book whose author matches case-insensitively', async () => {
+      const app = buildApp(false)
+
+      const matchResponse = await request(app)
+        .post('/books')
+        .send({ title: 'It', author: 'Stephen King', year: 1986 })
+
+      await request(app)
+        .post('/books')
+        .send({ title: 'Dune', author: 'Frank Herbert', year: 1965 })
+
+      const tokenResponse = await request(app)
+        .post('/auth/token')
+        .send({ username: 'admin', password: 'password' })
+
+      const listResponse = await request(app)
+        .get('/books?author=king')
+        .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+
+      expect(listResponse.status).toBe(200)
+      expect(listResponse.body).toEqual({ data: [matchResponse.body], page: 1, limit: 10, total: 1 })
+    })
+  })
+
+  describe('paginate books', () => {
+    it('returns the requested page of books', async () => {
+      const app = buildApp(false)
+
+      await request(app)
+        .post('/books')
+        .send({ title: 'First', author: 'Author', year: 2001 })
+
+      await request(app)
+        .post('/books')
+        .send({ title: 'Second', author: 'Author', year: 2002 })
+
+      await request(app)
+        .post('/books')
+        .send({ title: 'Third', author: 'Author', year: 2003 })
+
+      const tokenResponse = await request(app)
+        .post('/auth/token')
+        .send({ username: 'admin', password: 'password' })
+
+      const listResponse = await request(app)
+        .get('/books?page=2&limit=2')
+        .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+
+      expect(listResponse.status).toBe(200)
+      expect(listResponse.body.data).toHaveLength(1)
+      expect(listResponse.body.page).toBe(2)
+      expect(listResponse.body.limit).toBe(2)
+      expect(listResponse.body.total).toBe(3)
+    })
+  })
+
+  describe('reject an invalid query param', () => {
+    it('responds 400', async () => {
+      const app = buildApp(false)
+
+      const tokenResponse = await request(app)
+        .post('/auth/token')
+        .send({ username: 'admin', password: 'password' })
+
+      const listResponse = await request(app)
+        .get('/books?page=0')
+        .set('Authorization', `Bearer ${tokenResponse.body.token}`)
+
+      expect(listResponse.status).toBe(400)
     })
   })
 
