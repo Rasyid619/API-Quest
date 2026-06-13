@@ -70,6 +70,6 @@ yarn start
 
 Render settings:
 
-- **Build command**: `corepack enable && yarn install --immutable && yarn build`
-- **Start command**: `yarn start`
+- **Build command**: `corepack yarn install --immutable && corepack yarn build`
+- **Start command**: `node --enable-source-maps ./dist/index.js`
 - **Environment variables**: `PORT=10000`, `NODE_VERSION=24.14.1`

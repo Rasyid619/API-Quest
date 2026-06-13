@@ -3,8 +3,8 @@ services:
     name: api-quest
     runtime: node
     plan: free
-    buildCommand: corepack enable && yarn install --immutable && yarn build
-    startCommand: yarn start
+    buildCommand: corepack yarn install --immutable && corepack yarn build
+    startCommand: node --enable-source-maps ./dist/index.js
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
