@@ -1,7 +1,7 @@
 /** Auth routing module. */
-import LOGIN_SCHEMA from '../schemas/login.schema'
+import LOGIN_SCHEMA from '../schemas/auth/login.schema'
 import { Router } from 'express'
-import login from '../controllers/auth.controller'
+import login from '../controllers/auth/token.controller'
 import requestValidator from '../middlewares/request-validator'
 
 /** Express router for the auth resource. */

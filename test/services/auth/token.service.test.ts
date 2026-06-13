@@ -1,6 +1,6 @@
 /** Unit tests for the auth service. */
-import * as authService from '../../src/services/auth.service'
-import UnauthorizedError from '../../src/errors/unauthorized-error'
+import * as authService from '../../../src/services/auth/token.service'
+import UnauthorizedError from '../../../src/errors/unauthorized-error'
 import { verify } from 'jsonwebtoken'
 
 /** Symmetric secret used to sign access tokens in tests. */

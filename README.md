@@ -13,7 +13,8 @@ package to install.
 - **Framework layer**: local — `src/middlewares`, `src/helpers`, `src/errors`,
   and the framework types in `src/types` (no external core package)
 - **Validation**: `zod` request schemas via the local `requestValidator` middleware
-- **Auth**: JWT bearer access tokens (`jsonwebtoken`)
+- **Auth**: JWT bearer guard with environment-backed credentials
+  (`jsonwebtoken`)
 - **Logging**: Morgan
 - **Tests**: Jest + ts-jest + supertest (95% coverage threshold)
 - **Lint**: ESLint (typescript-eslint strict + stylistic), markdownlint, yamllint
@@ -44,9 +45,22 @@ src/
     dtos/<module>/     API request/response payloads (suffix: Dto)
     entities/          domain models
     jwt/               token payload structures
+    query-results/     raw database row shapes (suffix: Record)
     express/           Request augmentation (.d.ts)
 test/                 mirrors src/ (controllers, integration, middlewares, ...)
 ```
+
+## Authentication
+
+Authentication is intentionally implemented as a guard, not as a user
+management feature. The assessment requirement is to protect selected routes,
+so `POST /auth/token` validates the configured `AUTH_USERNAME` and
+`AUTH_PASSWORD`, issues a JWT, and protected routes verify that bearer token.
+
+Because the API does not need registration, profile management, password
+changes, roles, or user lookups, there is no `users` table or user repository.
+Adding one would introduce storage and migration work that is outside the
+current requirement.
 
 ## Getting started
 

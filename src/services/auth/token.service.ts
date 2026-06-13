@@ -1,8 +1,8 @@
 /** Business logic for authentication and token issuance. */
-import type AccessTokenPayload from '../types/jwt/access-token-payload'
-import type LoginDto from '../types/dtos/login.dto'
-import type TokenResponseDto from '../types/dtos/token-response.dto'
-import UnauthorizedError from '../errors/unauthorized-error'
+import type AccessTokenPayload from '../../types/jwt/access-token-payload'
+import type LoginDto from '../../types/dtos/auth/login.dto'
+import type TokenResponseDto from '../../types/dtos/auth/token-response.dto'
+import UnauthorizedError from '../../errors/unauthorized-error'
 import { sign } from 'jsonwebtoken'
 
 /**

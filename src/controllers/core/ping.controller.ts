@@ -1,7 +1,7 @@
 /** Ping controller module. */
 
 import { StatusCodes } from 'http-status-codes'
-import type SyncMiddleware from '../types/sync-middleware'
+import type SyncMiddleware from '../../types/sync-middleware'
 
 /**
  * Responds to a ping request with a 200 OK status and a success payload.

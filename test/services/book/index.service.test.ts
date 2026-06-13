@@ -1,7 +1,7 @@
 /** Database-backed tests for the book service. */
-import * as bookService from '../../src/services/book.service'
-import NotFoundError from '../../src/errors/not-found-error'
-import getPgPool from '../../src/helpers/pg-pool'
+import * as bookService from '../../../src/services/book/index.service'
+import NotFoundError from '../../../src/errors/not-found-error'
+import getPgPool from '../../../src/helpers/pg-pool'
 import { randomUUID } from 'node:crypto'
 
 describe('book.service', () => {

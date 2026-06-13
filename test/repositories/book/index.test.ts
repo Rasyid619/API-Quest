@@ -1,6 +1,6 @@
 /** Database-backed tests for the book repository. */
-import * as bookRepository from '../../src/repositories/book.repository'
-import getPgPool from '../../src/helpers/pg-pool'
+import * as bookRepository from '../../../src/repositories/book'
+import getPgPool from '../../../src/helpers/pg-pool'
 import { randomUUID } from 'node:crypto'
 
 describe('book.repository', () => {

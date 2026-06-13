@@ -1,7 +1,6 @@
-/** Get-book controller module. */
-import * as bookService from '../services/book.service'
-import type Controller from '../types/controller'
+import type Controller from '../../types/controller'
 import { StatusCodes } from 'http-status-codes'
+import getBookService from '../../services/book/get.service'
 
 /**
  * Responds 200 with the book identified by the validated route id.
@@ -14,7 +13,7 @@ const getBook: Controller = async (request, response) => {
   const id = request.params.id as string
 
   /** Requested book. */
-  const book = await bookService.getBook(id)
+  const book = await getBookService(id)
 
   response.status(StatusCodes.OK).json(book)
 }

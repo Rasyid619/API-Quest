@@ -1,14 +1,14 @@
 /** Books routing module. */
-import BOOK_ID_PARAMS_SCHEMA from '../schemas/book-id-params.schema'
-import CREATE_BOOK_SCHEMA from '../schemas/create-book.schema'
-import LIST_BOOKS_QUERY_SCHEMA from '../schemas/list-books-query.schema'
+import BOOK_ID_PARAMS_SCHEMA from '../schemas/book/id-params.schema'
+import CREATE_BOOK_SCHEMA from '../schemas/book/create.schema'
+import LIST_BOOKS_QUERY_SCHEMA from '../schemas/book/list-query.schema'
 import { Router } from 'express'
-import createBook from '../controllers/create-book.controller'
-import deleteBook from '../controllers/delete-book.controller'
-import getBook from '../controllers/get-book.controller'
-import listBooks from '../controllers/list-books.controller'
+import createBook from '../controllers/book/create.controller'
+import deleteBook from '../controllers/book/delete.controller'
+import getBook from '../controllers/book/get.controller'
+import listBooks from '../controllers/book/list.controller'
 import requestValidator from '../middlewares/request-validator'
-import updateBook from '../controllers/update-book.controller'
+import updateBook from '../controllers/book/update.controller'
 import verifyToken from '../middlewares/verify-token'
 
 /** Express router for the books resource. */

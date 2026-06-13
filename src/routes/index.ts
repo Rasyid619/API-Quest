@@ -2,9 +2,9 @@
 import { Router } from 'express'
 import authRouter from './auth.route'
 import booksRouter from './books.route'
-import echo from '../controllers/echo.controller'
-import health from '../controllers/health.controller'
-import ping from '../controllers/ping.controller'
+import echo from '../controllers/core/echo.controller'
+import health from '../controllers/core/health.controller'
+import ping from '../controllers/core/ping.controller'
 
 /** Express router for handling root-level routes. */
 const rootRouter = Router()

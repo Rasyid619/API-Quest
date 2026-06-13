@@ -1,8 +1,7 @@
-/** Create-book controller module. */
-import * as bookService from '../services/book.service'
-import type Controller from '../types/controller'
-import type CreateBookDto from '../types/dtos/create-book.dto'
+import type Controller from '../../types/controller'
+import type CreateBookDto from '../../types/dtos/book/create.dto'
 import { StatusCodes } from 'http-status-codes'
+import createBookService from '../../services/book/create.service'
 
 /**
  * Creates a book from the validated request body and responds 201 with it.
@@ -12,7 +11,7 @@ import { StatusCodes } from 'http-status-codes'
  */
 const createBook: Controller = async (request, response) => {
   /** Created book returned by the service. */
-  const book = await bookService.createBook(request.body as CreateBookDto)
+  const book = await createBookService(request.body as CreateBookDto)
 
   response.status(StatusCodes.CREATED).json(book)
 }

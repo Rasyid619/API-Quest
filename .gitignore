@@ -140,4 +140,9 @@ vite.config.ts.timestamp-*
 
 .vscode
 AGENTS.md
+CLAUDE.md
 CLAUDE.local.md
+CODEX.md
+
+# Claude Code local agent config
+.claude/

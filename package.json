@@ -12,8 +12,8 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "tsc --project tsconfig.build.json",
-    "lint": "eslint . && markdownlint '**/*.md' --ignore node_modules && yamllint '**/*.yml' '**/*.yaml' --ignore node_modules",
-    "lint:fix": "eslint --fix . && markdownlint --fix '**/*.md' --ignore node_modules",
+    "lint": "eslint . && markdownlint '**/*.md' --ignore '**/node_modules/**' && yamllint '**/*.yml' '**/*.yaml' --ignore '**/node_modules/**'",
+    "lint:fix": "eslint --fix . && markdownlint --fix '**/*.md' --ignore '**/node_modules/**'",
     "migrate": "node-pg-migrate",
     "openapi:bundle": "redocly bundle ./openapi.yml --output ./openapi/openapi-bundled.yaml",
     "start": "node --enable-source-maps ./dist/index.js",

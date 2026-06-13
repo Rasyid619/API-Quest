@@ -1,7 +1,7 @@
 /** Echo controller module. */
 
 import { StatusCodes } from 'http-status-codes'
-import type SyncMiddleware from '../types/sync-middleware'
+import type SyncMiddleware from '../../types/sync-middleware'
 
 /**
  * Responds with the exact JSON object received in the request body.

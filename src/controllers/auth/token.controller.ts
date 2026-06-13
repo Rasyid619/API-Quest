@@ -1,7 +1,7 @@
 /** Auth controller module. */
-import * as authService from '../services/auth.service'
-import type Controller from '../types/controller'
-import type LoginDto from '../types/dtos/login.dto'
+import * as authService from '../../services/auth/token.service'
+import type Controller from '../../types/controller'
+import type LoginDto from '../../types/dtos/auth/login.dto'
 import { StatusCodes } from 'http-status-codes'
 
 /**

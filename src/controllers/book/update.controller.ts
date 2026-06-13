@@ -1,8 +1,7 @@
-/** Update-book controller module. */
-import * as bookService from '../services/book.service'
-import type Controller from '../types/controller'
-import type CreateBookDto from '../types/dtos/create-book.dto'
+import type Controller from '../../types/controller'
+import type CreateBookDto from '../../types/dtos/book/create.dto'
 import { StatusCodes } from 'http-status-codes'
+import updateBookService from '../../services/book/update.service'
 
 /**
  * Updates the book identified by the validated route id and responds 200 with it.
@@ -15,7 +14,7 @@ const updateBook: Controller = async (request, response) => {
   const id = request.params.id as string
 
   /** Updated book returned by the service. */
-  const book = await bookService.updateBook(id, request.body as CreateBookDto)
+  const book = await updateBookService(id, request.body as CreateBookDto)
 
   response.status(StatusCodes.OK).json(book)
 }
