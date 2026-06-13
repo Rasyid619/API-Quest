@@ -6,7 +6,7 @@ info:
 
 tags:
   - name: Books
-    description: Create and read books.
+    description: Create, read, update, and delete books.
   - name: Echo
     description: Echoes request payloads back to the client.
   - name: Health
@@ -47,6 +47,25 @@ paths:
         "400":
           description: The request body failed validation.
   /books/{id}:
+    delete:
+      tags:
+        - Books
+      summary: Delete a book.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID identifying the book.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: The book was deleted.
+        "400":
+          description: The id is not a valid UUID.
+        "404":
+          description: No book has the given id.
     get:
       tags:
         - Books
@@ -68,6 +87,35 @@ paths:
                 $ref: "#/components/schemas/Book"
         "400":
           description: The id is not a valid UUID.
+        "404":
+          description: No book has the given id.
+    put:
+      tags:
+        - Books
+      summary: Update a book.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID identifying the book.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookRequest"
+      responses:
+        "200":
+          description: The updated book.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: The id is not a valid UUID or the request body failed validation.
         "404":
           description: No book has the given id.
   /echo:

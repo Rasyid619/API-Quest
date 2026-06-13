@@ -39,4 +39,38 @@ describe('book.service', () => {
       await expect(bookService.getBook(randomUUID())).rejects.toThrow(NotFoundError)
     })
   })
+
+  describe('updateBook when the book exists', () => {
+    it('returns the updated book', async () => {
+      const created = await bookService.createBook({ title: '1984', author: 'Orwell', year: 1949 })
+
+      const updated = await bookService.updateBook(created.id, { title: 'Animal Farm', author: 'Orwell', year: 1945 })
+
+      expect(updated).toEqual({ id: created.id, title: 'Animal Farm', author: 'Orwell', year: 1945 })
+    })
+  })
+
+  describe('updateBook when the book is missing', () => {
+    it('throws NotFoundError', async () => {
+      const update = bookService.updateBook(randomUUID(), { title: 'Missing', author: 'Nobody', year: 2000 })
+
+      await expect(update).rejects.toThrow(NotFoundError)
+    })
+  })
+
+  describe('deleteBook when the book exists', () => {
+    it('removes the book so getBook rejects', async () => {
+      const created = await bookService.createBook({ title: 'Sapiens', author: 'Harari', year: 2011 })
+
+      await bookService.deleteBook(created.id)
+
+      await expect(bookService.getBook(created.id)).rejects.toThrow(NotFoundError)
+    })
+  })
+
+  describe('deleteBook when the book is missing', () => {
+    it('throws NotFoundError', async () => {
+      await expect(bookService.deleteBook(randomUUID())).rejects.toThrow(NotFoundError)
+    })
+  })
 })
