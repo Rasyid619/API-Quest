@@ -17,25 +17,25 @@ const AUTHOR_FILTER_SQL = `
   WHERE author ILIKE '%' || $1 || '%'
 `
 
-/** SQL selecting a single book by id. */
+/** SQL selecting a single book by id, comparing as text so non-UUID ids match nothing. */
 const SELECT_BOOK_BY_ID_SQL = `
   SELECT id, title, author, year
   FROM books
-  WHERE id = $1
+  WHERE id::text = $1
 `
 
 /** SQL updating a book by id and returning its stored columns. */
 const UPDATE_BOOK_SQL = `
   UPDATE books
   SET title = $2, author = $3, year = $4
-  WHERE id = $1
+  WHERE id::text = $1
   RETURNING id, title, author, year
 `
 
 /** SQL deleting a book by id. */
 const DELETE_BOOK_SQL = `
   DELETE FROM books
-  WHERE id = $1
+  WHERE id::text = $1
 `
 
 /**

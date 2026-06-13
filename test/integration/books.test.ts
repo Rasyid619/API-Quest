@@ -190,4 +190,36 @@ describe('/books', () => {
       expect(deleteResponse.status).toBe(404)
     })
   })
+
+  describe('get a book with a non-uuid id', () => {
+    it('responds 404', async () => {
+      const app = buildApp(false)
+
+      const getResponse = await request(app).get('/books/nonexistent')
+
+      expect(getResponse.status).toBe(404)
+    })
+  })
+
+  describe('update a book with a non-uuid id', () => {
+    it('responds 404', async () => {
+      const app = buildApp(false)
+
+      const updateResponse = await request(app)
+        .put('/books/nonexistent')
+        .send({ title: 'Ghost', author: 'Nobody', year: 2000 })
+
+      expect(updateResponse.status).toBe(404)
+    })
+  })
+
+  describe('delete a book with a non-uuid id', () => {
+    it('responds 404', async () => {
+      const app = buildApp(false)
+
+      const deleteResponse = await request(app).delete('/books/nonexistent')
+
+      expect(deleteResponse.status).toBe(404)
+    })
+  })
 })
