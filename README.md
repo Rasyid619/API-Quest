@@ -55,7 +55,7 @@ test/                 mirrors src/ (controllers, integration, middlewares, ...)
 corepack enable && yarn install
 
 # 2. Configure environment
-cp .env.example .env                 # fill ACCESS_TOKEN_PUBLIC_KEY
+cp .env.example .env
 
 # 3. Build / test / lint
 yarn build
@@ -72,4 +72,4 @@ Render settings:
 
 - **Build command**: `corepack enable && yarn install --immutable && yarn build`
 - **Start command**: `yarn start`
-- **Environment variables**: `ACCESS_TOKEN_PUBLIC_KEY`, `PORT=10000`
+- **Environment variables**: `PORT=10000`, `NODE_VERSION=24.14.1`

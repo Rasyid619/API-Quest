@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: api-quest
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && yarn install --immutable && yarn build
+    startCommand: yarn start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: PORT
+        value: 10000

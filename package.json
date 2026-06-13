@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "API Quest assessment service built from the TypeScript service template.",
   "engines": {
-    "node": "^25.5.0"
+    "node": ">=24.14.1 <26.0.0"
   },
   "license": "UNLICENSED",
   "author": "",

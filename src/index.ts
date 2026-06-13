@@ -15,7 +15,7 @@ const serverPort = decideServerPort(process.env)
 const app = buildApp(true)
 
 /** Express server instance. */
-const server = app.listen(serverPort, () => {
+const server = app.listen(serverPort, '0.0.0.0', () => {
   console.info(`Server is running on port ${serverPort}.`)
 })
 
