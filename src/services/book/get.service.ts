@@ -1,6 +1,6 @@
 import type Book from '../../types/entities/book'
 import NotFoundError from '../../errors/not-found-error'
-import { findBookById } from '../../repositories/book'
+import findBookById from '../../repositories/book/find-by-id'
 
 /**
  * Fetches a single book by id.

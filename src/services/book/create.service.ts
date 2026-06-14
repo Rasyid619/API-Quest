@@ -1,6 +1,6 @@
 import type Book from '../../types/entities/book'
 import type CreateBookDto from '../../types/dtos/book/create.dto'
-import { insertBook } from '../../repositories/book'
+import insertBook from '../../repositories/book/insert'
 import { randomUUID } from 'node:crypto'
 import runInTransaction from '../../helpers/run-in-transaction'
 

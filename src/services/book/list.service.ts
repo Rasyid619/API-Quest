@@ -1,6 +1,6 @@
 import type Book from '../../types/entities/book'
 import type ListBooksQueryDto from '../../types/dtos/book/list-query.dto'
-import { findBooks } from '../../repositories/book'
+import findBooks from '../../repositories/book/find'
 
 /**
  * Lists a page of books, optionally filtered by author.

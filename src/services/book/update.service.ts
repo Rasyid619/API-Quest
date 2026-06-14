@@ -1,8 +1,9 @@
-import { lockBookById, updateBook as updateBookRecord } from '../../repositories/book'
 import type Book from '../../types/entities/book'
 import type CreateBookDto from '../../types/dtos/book/create.dto'
 import NotFoundError from '../../errors/not-found-error'
+import lockBookById from '../../repositories/book/lock-by-id'
 import runInTransaction from '../../helpers/run-in-transaction'
+import updateBookRecord from '../../repositories/book/update'
 
 /**
  * Updates a book by id from the given payload inside a transaction.

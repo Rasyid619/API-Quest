@@ -1,4 +1,4 @@
-import * as bookRepository from '../../../src/repositories/book'
+import * as insertBookModule from '../../../src/repositories/book/insert'
 import * as transactionHelper from '../../../src/helpers/run-in-transaction'
 import type { PgClient } from '../../../src/types/pg'
 import createBook from '../../../src/services/book/create.service'
@@ -18,7 +18,7 @@ describe('createBook', () => {
       const runInTransaction = jest
         .spyOn(transactionHelper, 'default')
         .mockImplementation(async (work) => work(transactionClient))
-      const insertBook = jest.spyOn(bookRepository, 'insertBook').mockResolvedValue(stored)
+      const insertBook = jest.spyOn(insertBookModule, 'default').mockResolvedValue(stored)
 
       const created = await createBook(payload)
 

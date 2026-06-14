@@ -1,6 +1,7 @@
 /** Unit tests for updating books. */
-import * as bookRepository from '../../../src/repositories/book'
+import * as lockBookByIdModule from '../../../src/repositories/book/lock-by-id'
 import * as transactionHelper from '../../../src/helpers/run-in-transaction'
+import * as updateBookModule from '../../../src/repositories/book/update'
 import NotFoundError from '../../../src/errors/not-found-error'
 import type { PgClient } from '../../../src/types/pg'
 import updateBook from '../../../src/services/book/update.service'
@@ -20,8 +21,8 @@ describe('updateBook', () => {
       const runInTransaction = jest
         .spyOn(transactionHelper, 'default')
         .mockImplementation(async (work) => work(transactionClient))
-      const lockBookById = jest.spyOn(bookRepository, 'lockBookById').mockResolvedValue(true)
-      const updateBookRecord = jest.spyOn(bookRepository, 'updateBook').mockResolvedValue(updated)
+      const lockBookById = jest.spyOn(lockBookByIdModule, 'default').mockResolvedValue(true)
+      const updateBookRecord = jest.spyOn(updateBookModule, 'default').mockResolvedValue(updated)
 
       const result = await updateBook(updated.id, payload)
 
@@ -40,8 +41,8 @@ describe('updateBook', () => {
       jest
         .spyOn(transactionHelper, 'default')
         .mockImplementation(async (work) => work(transactionClient))
-      const lockBookById = jest.spyOn(bookRepository, 'lockBookById').mockResolvedValue(false)
-      const updateBookRecord = jest.spyOn(bookRepository, 'updateBook').mockResolvedValue(undefined)
+      const lockBookById = jest.spyOn(lockBookByIdModule, 'default').mockResolvedValue(false)
+      const updateBookRecord = jest.spyOn(updateBookModule, 'default').mockResolvedValue(undefined)
 
       await expect(updateBook('missing-id', payload)).rejects.toThrow(NotFoundError)
       expect(lockBookById).toHaveBeenCalledTimes(1)

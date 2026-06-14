@@ -1,5 +1,6 @@
 /** Unit tests for deleting books. */
-import * as bookRepository from '../../../src/repositories/book'
+import * as deleteBookModule from '../../../src/repositories/book/delete'
+import * as lockBookByIdModule from '../../../src/repositories/book/lock-by-id'
 import * as transactionHelper from '../../../src/helpers/run-in-transaction'
 import NotFoundError from '../../../src/errors/not-found-error'
 import type { PgClient } from '../../../src/types/pg'
@@ -18,8 +19,8 @@ describe('deleteBook', () => {
       const runInTransaction = jest
         .spyOn(transactionHelper, 'default')
         .mockImplementation(async (work) => work(transactionClient))
-      const lockBookById = jest.spyOn(bookRepository, 'lockBookById').mockResolvedValue(true)
-      const deleteBookRecord = jest.spyOn(bookRepository, 'deleteBook').mockResolvedValue(true)
+      const lockBookById = jest.spyOn(lockBookByIdModule, 'default').mockResolvedValue(true)
+      const deleteBookRecord = jest.spyOn(deleteBookModule, 'default').mockResolvedValue(true)
 
       await deleteBook('book-id')
 
@@ -36,8 +37,8 @@ describe('deleteBook', () => {
       jest
         .spyOn(transactionHelper, 'default')
         .mockImplementation(async (work) => work(transactionClient))
-      const lockBookById = jest.spyOn(bookRepository, 'lockBookById').mockResolvedValue(false)
-      const deleteBookRecord = jest.spyOn(bookRepository, 'deleteBook').mockResolvedValue(false)
+      const lockBookById = jest.spyOn(lockBookByIdModule, 'default').mockResolvedValue(false)
+      const deleteBookRecord = jest.spyOn(deleteBookModule, 'default').mockResolvedValue(false)
 
       await expect(deleteBook('missing-id')).rejects.toThrow(NotFoundError)
       expect(lockBookById).toHaveBeenCalledTimes(1)

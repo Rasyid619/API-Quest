@@ -1,5 +1,0 @@
-export { default as createBook } from './create.service'
-export { default as deleteBook } from './delete.service'
-export { default as getBook } from './get.service'
-export { default as listBooks } from './list.service'
-export { default as updateBook } from './update.service'

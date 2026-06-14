@@ -4,10 +4,11 @@ import type BookRecord from '../../types/query-results/book/book.record'
 import type { PgQueryRunner } from '../../types/pg'
 import getPgPool from '../../helpers/pg-pool'
 import mapBookRecord from './map-record'
+import wrapLikePattern from '../../helpers/wrap-like-pattern'
 
 /** SQL fragment filtering books by a case-insensitive author substring. */
 const AUTHOR_FILTER_SQL = `
-  WHERE author ILIKE '%' || $1 || '%'
+  WHERE author ILIKE $1
 `
 
 /**
@@ -26,7 +27,10 @@ const findBooks = async (filter: BookListFilter, executor: PgQueryRunner = getPg
   const whereClause = hasAuthor ? AUTHOR_FILTER_SQL : ''
 
   /** Positional parameters for the select query. */
-  const params = hasAuthor ? [filter.author, filter.limit, filter.offset] : [filter.limit, filter.offset]
+  const params =
+    filter.author !== undefined
+      ? [wrapLikePattern(filter.author), filter.limit, filter.offset]
+      : [filter.limit, filter.offset]
 
   /** SQL selecting the requested page of books. */
   const selectSql = `

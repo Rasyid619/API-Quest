@@ -1,5 +1,6 @@
-import { deleteBook as deleteBookRecord, lockBookById } from '../../repositories/book'
 import NotFoundError from '../../errors/not-found-error'
+import deleteBookRecord from '../../repositories/book/delete'
+import lockBookById from '../../repositories/book/lock-by-id'
 import runInTransaction from '../../helpers/run-in-transaction'
 
 /**
