@@ -13,3 +13,15 @@ describe('GET /health', () => {
     })
   })
 })
+
+describe('GET /', () => {
+  describe('when the service is running', () => {
+    it('responds 200', async () => {
+      const app = buildApp(false)
+
+      const response = await request(app).get('/')
+
+      expect(response.status).toBe(200)
+    })
+  })
+})

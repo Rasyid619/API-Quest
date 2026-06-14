@@ -15,6 +15,14 @@ tags:
     description: Service health checks.
 
 paths:
+  /:
+    get:
+      tags:
+        - Health
+      summary: Check service health at the root path.
+      responses:
+        "200":
+          description: Service is healthy.
   /auth/token:
     post:
       tags:

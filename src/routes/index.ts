@@ -9,6 +9,7 @@ import ping from '../controllers/core/ping.controller'
 /** Express router for handling root-level routes. */
 const rootRouter = Router()
 
+rootRouter.get('/', health)
 rootRouter.post('/echo', echo)
 rootRouter.get('/health', health)
 rootRouter.get('/ping', ping)
