@@ -14,31 +14,34 @@ describe('deleteBook', () => {
   })
 
   describe('when the book exists', () => {
-    it('deletes inside a transaction and calls the repository once', async () => {
+    it('locks the row then deletes inside a transaction', async () => {
       const runInTransaction = jest
         .spyOn(transactionHelper, 'default')
         .mockImplementation(async (work) => work(transactionClient))
+      const lockBookById = jest.spyOn(bookRepository, 'lockBookById').mockResolvedValue(true)
       const deleteBookRecord = jest.spyOn(bookRepository, 'deleteBook').mockResolvedValue(true)
 
       await deleteBook('book-id')
 
       expect(runInTransaction).toHaveBeenCalledTimes(1)
+      expect(lockBookById).toHaveBeenCalledTimes(1)
+      expect(lockBookById).toHaveBeenCalledWith('book-id', transactionClient)
       expect(deleteBookRecord).toHaveBeenCalledTimes(1)
       expect(deleteBookRecord).toHaveBeenCalledWith('book-id', transactionClient)
     })
   })
 
   describe('when the book is missing', () => {
-    it('throws NotFoundError after one repository call inside a transaction', async () => {
-      const runInTransaction = jest
+    it('throws NotFoundError without deleting the record', async () => {
+      jest
         .spyOn(transactionHelper, 'default')
         .mockImplementation(async (work) => work(transactionClient))
+      const lockBookById = jest.spyOn(bookRepository, 'lockBookById').mockResolvedValue(false)
       const deleteBookRecord = jest.spyOn(bookRepository, 'deleteBook').mockResolvedValue(false)
 
       await expect(deleteBook('missing-id')).rejects.toThrow(NotFoundError)
-      expect(runInTransaction).toHaveBeenCalledTimes(1)
-      expect(deleteBookRecord).toHaveBeenCalledTimes(1)
-      expect(deleteBookRecord).toHaveBeenCalledWith('missing-id', transactionClient)
+      expect(lockBookById).toHaveBeenCalledTimes(1)
+      expect(deleteBookRecord).toHaveBeenCalledTimes(0)
     })
   })
 })

@@ -1,5 +1,5 @@
+import { deleteBook as deleteBookRecord, lockBookById } from '../../repositories/book'
 import NotFoundError from '../../errors/not-found-error'
-import { deleteBook as deleteBookRecord } from '../../repositories/book'
 import runInTransaction from '../../helpers/run-in-transaction'
 
 /**
@@ -10,11 +10,13 @@ import runInTransaction from '../../helpers/run-in-transaction'
  */
 const deleteBook = async (id: string): Promise<void> => {
   await runInTransaction(async (client) => {
-    /** Whether the book was deleted. */
-    const deleted = await deleteBookRecord(id, client)
-    if (!deleted) {
+    /** Whether the book row was locked for update. */
+    const isLocked = await lockBookById(id, client)
+    if (!isLocked) {
       throw new NotFoundError(`Book ${id} not found`)
     }
+
+    await deleteBookRecord(id, client)
   })
 }
 

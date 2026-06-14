@@ -1,8 +1,8 @@
+import { lockBookById, updateBook as updateBookRecord } from '../../repositories/book'
 import type Book from '../../types/entities/book'
 import type CreateBookDto from '../../types/dtos/book/create.dto'
 import NotFoundError from '../../errors/not-found-error'
 import runInTransaction from '../../helpers/run-in-transaction'
-import { updateBook as updateBookRecord } from '../../repositories/book'
 
 /**
  * Updates a book by id from the given payload inside a transaction.
@@ -22,13 +22,15 @@ const updateBook = async (id: string, payload: CreateBookDto): Promise<Book> => 
   }
 
   return runInTransaction(async (client) => {
-    /** Updated book, if it exists. */
-    const updated = await updateBookRecord(book, client)
-    if (!updated) {
+    /** Whether the book row was locked for update. */
+    const isLocked = await lockBookById(id, client)
+    if (!isLocked) {
       throw new NotFoundError(`Book ${id} not found`)
     }
 
-    return updated
+    await updateBookRecord(book, client)
+
+    return book
   })
 }
 
